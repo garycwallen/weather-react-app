@@ -1,5 +1,4 @@
 import { useState } from 'react';
-console.log(process.env);
 const api = {
   key: process.env.REACT_APP_API_KEY_WEATHER_APP,
   base: 'https://api.openweathermap.org/data/2.5/',
@@ -11,7 +10,8 @@ export default function App() {
 
   const search = (evt) => {
     if (evt.key === 'Enter') {
-      fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
+      // TODO: Add in selection on search for units, or on-demand conversion
+      fetch(`${api.base}weather?q=${query}&units=imperial&APPID=${api.key}`)
         .then((res) => res.json())
         .then((result) => {
           setWeather(result);
@@ -20,44 +20,17 @@ export default function App() {
     }
   };
 
-  const dateBuilder = (d) => {
-    let months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    let days = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-    ];
+  const dateBuilder = () => {
+    let today = new Date().toDateString();
 
-    let day = days[d.getDay()];
-    let date = d.getDate();
-    let month = months[d.getMonth()];
-    let year = d.getFullYear();
-
-    return `${day} ${date} ${month} ${year}`;
+    return `${today}`;
   };
 
   return (
     <div
       className={
         typeof weather.main != 'undefined'
-          ? weather.main.temp > 16
+          ? weather.main.temp > 61
             ? 'app warm'
             : 'app'
           : 'app'
@@ -84,7 +57,7 @@ export default function App() {
             </div>
             <div className='weather-box'>
               <div className='temperature'>
-                {Math.round(weather.main.temp)}°c
+                {Math.round(weather.main.temp)}°F
               </div>
               <div className='condition'>{weather.weather[0].main}</div>
             </div>
